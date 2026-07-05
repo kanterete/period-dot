@@ -10,6 +10,8 @@ const app = express();
 const port = process.env.PORT;
 
 const roleRoutes = require("./routes/roleRoutes");
+const symptomRoutes = require("./routes/symptomRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -25,7 +27,9 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-app.use("/api/roles", roleRoutes);
+app.use("/roles", roleRoutes);
+app.use("/symptoms", symptomRoutes);
+app.use("/users", userRoutes);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
