@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const db = require("./config/db");
@@ -12,8 +12,10 @@ const port = process.env.PORT;
 const roleRoutes = require("./routes/roleRoutes");
 const symptomRoutes = require("./routes/symptomRoutes");
 const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded());
 
 app.use(
@@ -30,6 +32,7 @@ app.get("/", (req, res) => {
 app.use("/roles", roleRoutes);
 app.use("/symptoms", symptomRoutes);
 app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

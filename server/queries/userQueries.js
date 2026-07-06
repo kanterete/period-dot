@@ -3,8 +3,7 @@ const db = require("../config/db");
 const bcrypt = require("bcrypt");
 
 const createUser = async ({ login, email, password, age }) => {
-  const saltRounds = Number(process.env.SALT) || 10;
-
+  const saltRounds = (await bcrypt.genSalt(Number(process.env.SALT))) || 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   const [result] = await db.execute(
@@ -31,7 +30,7 @@ const getUserById = async (userId) => {
 
 const getUserByEmail = async (email) => {
   const [users] = await db.execute(
-    "SELECT id, login, email, age, role_id, created_at, updated_at FROM users WHERE email = ?",
+    "SELECT id, login, email, hashed_password, age, role_id, created_at, updated_at FROM users WHERE email = ?",
     [email],
   );
   return users[0];
@@ -55,7 +54,7 @@ const editUser = async (userId, data) => {
 
   const values = fieldsToUpdate.map((field) => data[field]);
 
-  const setClause = fieldsToUpdate.map((field) => `${field} = ?`.join(", "));
+  const setClause = fieldsToUpdate.map((field) => `${field} = ?`).join(", ");
 
   const [result] = await db.execute(
     `UPDATE users SET ${setClause} WHERE id = ?`,

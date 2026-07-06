@@ -1,21 +1,27 @@
 const {
-  updateUserValidation,
-  createUserValidation,
-} = require("../middlewares/validate");
-const userQueries = require("../queries/userQueries");
-const jwt = require("jsonwebtoken");
+  editUserSchema,
+  createUserSchema,
+} = require("../validators/userSchema");
 
-//TODO - fix validation
+const jwt = require("jsonwebtoken");
+const z = require("zod");
+
+const userQueries = require("../queries/userQueries");
+
+// TODO: przeniesc adminowe rzeczy do oddzielnego pliku
+// TODO: skonczyc rejestracje, login
+// TODO: zajac sie frontendem
 
 const createUser = async (req, res) => {
   try {
     const userData = req.body;
 
-    const validationResult = createUserValidation(userData);
+    const validation = createUserSchema.safeParse(userData);
 
-    if (!validationResult) {
+    if (!validation.success) {
       return res.status(404).json({
-        message: validationResult,
+        message: "Validation error",
+        errors: z.prettifyError(validation.error),
       });
     }
 
@@ -29,6 +35,35 @@ const createUser = async (req, res) => {
 
     await userQueries.createUser(userData);
     res.status(201).json({ message: "User created" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Server error");
+  }
+};
+
+const editUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await userQueries.getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const dataToUpdate = req.body;
+    const validation = editUserSchema.safeParse(dataToUpdate);
+
+    if (!validation.success) {
+      return res.status(404).json({
+        message: "Validation error",
+        errors: z.prettifyError(validation.error),
+      });
+    }
+
+    await userQueries.editUser(userId, dataToUpdate);
+
+    res.status(200).json({ message: "User edited" });
   } catch (err) {
     console.error(err);
     res.status(500).json("Server error");
@@ -53,7 +88,7 @@ const getUserById = async (req, res) => {
     const user = await userQueries.getUserById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "No user found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json(user);
@@ -70,7 +105,7 @@ const getUserByEmail = async (req, res) => {
     const user = await userQueries.getUserByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ message: "No user found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json(user);
@@ -93,34 +128,6 @@ const deleteUser = async (req, res) => {
     await userQueries.deleteUser(userId);
 
     res.status(200).json({ message: "User deleted" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json("Server error");
-  }
-};
-
-const editUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const dataToUpdate = req.body;
-
-    const user = await userQueries.getUserById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const validationResult = updateUserValidation(dataToUpdate);
-
-    if (!validationResult) {
-      return res.status(404).json({
-        message: validationResult,
-      });
-    }
-
-    await userQueries.editUser(userId, dataToUpdate);
-
-    res.status(200).json({ message: "User edited" });
   } catch (err) {
     console.error(err);
     res.status(500).json("Server error");
