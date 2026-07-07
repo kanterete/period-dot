@@ -2,50 +2,13 @@ const {
   editUserSchema,
   createUserSchema,
 } = require("../validators/userSchema");
-
-const jwt = require("jsonwebtoken");
 const z = require("zod");
 
 const userQueries = require("../queries/userQueries");
 
-// TODO: przeniesc adminowe rzeczy do oddzielnego pliku
-// TODO: skonczyc rejestracje, login
-// TODO: zajac sie frontendem
-
-const createUser = async (req, res) => {
+const editMe = async (req, res) => {
   try {
-    const userData = req.body;
-
-    const validation = createUserSchema.safeParse(userData);
-
-    if (!validation.success) {
-      return res.status(404).json({
-        message: "Validation error",
-        errors: z.prettifyError(validation.error),
-      });
-    }
-
-    const existingUser = await userQueries.getUserByEmail(userData.email);
-
-    if (existingUser) {
-      return res.status(409).json({
-        message: "User already exists",
-      });
-    }
-
-    await userQueries.createUser(userData);
-    res.status(201).json({ message: "User created" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json("Server error");
-  }
-};
-
-const editUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const user = await userQueries.getUserById(userId);
+    const user = await userQueries.getUserById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -61,7 +24,7 @@ const editUser = async (req, res) => {
       });
     }
 
-    await userQueries.editUser(userId, dataToUpdate);
+    await userQueries.editUser(user.id, dataToUpdate);
 
     res.status(200).json({ message: "User edited" });
   } catch (err) {
@@ -70,75 +33,39 @@ const editUser = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
+const getMe = async (req, res) => {
   try {
-    const users = await userQueries.getUsers();
+    const user = await userQueries.getUserById(req.user.id);
 
-    res.status(200).json(users);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user });
   } catch (err) {
     console.error(err);
-    res.status(500).json("Server error");
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const getUserById = async (req, res) => {
+const deleteMe = async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    const user = await userQueries.getUserById(userId);
+    const user = await userQueries.getUserById(req.user.id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user);
+    await userQueries.deleteUser(user.id);
+    return res.status(200).json({ message: "User deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json("Server error");
-  }
-};
-
-const getUserByEmail = async (req, res) => {
-  try {
-    const { email } = req.params;
-
-    const user = await userQueries.getUserByEmail(email);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json("Server error");
-  }
-};
-
-const deleteUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const user = await userQueries.getUserById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    await userQueries.deleteUser(userId);
-
-    res.status(200).json({ message: "User deleted" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json("Server error");
+    res.status(500).json({ message: "Server error" });
   }
 };
 
 module.exports = {
-  createUser,
-  getUserById,
-  getUserByEmail,
-  getUsers,
-  editUser,
-  deleteUser,
+  editMe,
+  getMe,
+  deleteMe,
 };

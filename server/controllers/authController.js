@@ -49,31 +49,6 @@ const login = async (req, res) => {
   }
 };
 
-const validate = (data) => {
-  const loginSchema = z.object({
-    email: z.string().email("Incorrect email").max(255, "Email too long"),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
-  });
-  return loginSchema.safeParse(data);
-};
-
-const getMe = async (req, res) => {
-  try {
-    const user = await userQueries.getUserById(req.user.id);
-
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-    }
-
-    return res.status(200).json({ user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -84,8 +59,17 @@ const logout = (req, res) => {
   return res.status(200).json({ message: "Logged out successfully" });
 };
 
+const validate = (data) => {
+  const loginSchema = z.object({
+    email: z.string().email("Incorrect email").max(255, "Email too long"),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+  });
+  return loginSchema.safeParse(data);
+};
+
 module.exports = {
   login,
   logout,
-  getMe,
 };

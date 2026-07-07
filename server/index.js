@@ -13,6 +13,7 @@ const roleRoutes = require("./routes/roleRoutes");
 const symptomRoutes = require("./routes/symptomRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
+const adminRoutes = require("./routes/admin/adminRoutes");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -29,10 +30,12 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
+app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
 app.use("/symptoms", symptomRoutes);
-app.use("/users", userRoutes);
+
 app.use("/auth", authRoutes);
+app.use("/admin/users/", adminRoutes);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
