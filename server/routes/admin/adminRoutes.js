@@ -10,8 +10,8 @@ const {
 router.use(authMiddleware, adminMiddleware);
 
 router.get("/", adminUserController.getUsers);
-router.get("/:userId", adminUserController.getUserById);
 router.post("/", adminUserController.createUser);
+router.get("/:userId", adminUserController.getUserById);
 router.patch("/:userId", adminUserController.editUser);
 router.delete("/:userId", adminUserController.deleteUser);
 

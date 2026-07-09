@@ -10,26 +10,35 @@ const userQueries = require("../../queries/userQueries");
 
 const createUser = async (req, res) => {
   try {
-    const userData = req.body;
-
     const validation = createUserSchema.safeParse(userData);
 
     if (!validation.success) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Validation error",
         errors: z.prettifyError(validation.error),
       });
     }
 
-    const existingUser = await userQueries.getUserByEmail(userData.email);
+    const userData = req.body;
 
-    if (existingUser) {
+    const existingEmail = await userQueries.getUserByEmail(userData.email);
+
+    if (existingEmail) {
       return res.status(409).json({
-        message: "User already exists",
+        message: "Email already exists",
       });
     }
 
-    await userQueries.createUser(userData);
+    const existingLogin = await userQueries.getUserByLogin(userData.login);
+
+    if (existingLogin) {
+      return res.status(409).json({
+        message: "Login already exists",
+      });
+    }
+
+    const result = await userQueries.createUser(userData);
+
     res.status(201).json({ message: "User created" });
   } catch (err) {
     console.error(err);

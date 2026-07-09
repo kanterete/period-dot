@@ -14,6 +14,7 @@ const symptomRoutes = require("./routes/symptomRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes");
+const cycleRoutes = require("./routes/cycleRoutes");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -36,6 +37,7 @@ app.use("/symptoms", symptomRoutes);
 
 app.use("/auth", authRoutes);
 app.use("/admin/users/", adminRoutes);
+app.use("/cycles", cycleRoutes);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

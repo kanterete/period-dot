@@ -2,10 +2,11 @@ const z = require("zod");
 const bcrypt = require("bcrypt");
 const userQueries = require("../queries/userQueries");
 const { generateAuthToken } = require("../utils/authToken");
+const { registerSchema, loginSchema } = require("../validators/authSchema");
 
 const login = async (req, res) => {
   try {
-    const validation = validate(req.body);
+    const validation = loginSchema.safeParse(req.body);
 
     if (!validation.success) {
       return res.status(400).send({
@@ -49,6 +50,48 @@ const login = async (req, res) => {
   }
 };
 
+const register = async (req, res) => {
+  try {
+    const validation = registerSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).send({
+        message: "Validation error",
+        errors: z.prettifyError(validation.error),
+      });
+    }
+
+    const userData = validation.data;
+
+    const existingEmail = await userQueries.getUserByEmail(userData.email);
+
+    if (existingEmail) {
+      return res.status(409).json({
+        message: "Email already exists",
+      });
+    }
+
+    const existingLogin = await userQueries.getUserByLogin(userData.login);
+
+    if (existingLogin) {
+      return res.status(409).json({
+        message: "Login already exists",
+      });
+    }
+
+    const { confirmPassword, ...userToCreate } = validation.data;
+
+    const user = await userQueries.createUser(userToCreate);
+
+    return res.status(200).send({
+      message: "Registered successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Server error" });
+  }
+};
+
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -59,17 +102,8 @@ const logout = (req, res) => {
   return res.status(200).json({ message: "Logged out successfully" });
 };
 
-const validate = (data) => {
-  const loginSchema = z.object({
-    email: z.string().email("Incorrect email").max(255, "Email too long"),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
-  });
-  return loginSchema.safeParse(data);
-};
-
 module.exports = {
   login,
+  register,
   logout,
 };

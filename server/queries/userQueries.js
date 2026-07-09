@@ -29,9 +29,17 @@ const getUserById = async (userId) => {
 };
 
 const getUserByEmail = async (email) => {
+  const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [
+    email,
+  ]);
+  return users[0];
+};
+
+const getUserByLogin = async (login) => {
   const [users] = await db.execute(
-    "SELECT id, login, email, hashed_password, age, role_id, created_at, updated_at FROM users WHERE email = ?",
-    [email],
+    `
+    SELECT * FROM users WHERE login = ?`,
+    [login],
   );
   return users[0];
 };
