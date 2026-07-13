@@ -82,6 +82,7 @@ const register = async (req, res) => {
     const { confirmPassword, ...userToCreate } = validation.data;
 
     const user = await userQueries.createUser(userToCreate);
+    await userQueries.createUserCycleSettings(user.insertId);
 
     return res.status(200).send({
       message: "Registered successfully",

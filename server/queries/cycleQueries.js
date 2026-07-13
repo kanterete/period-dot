@@ -81,7 +81,13 @@ const deleteCycle = async (cycleId, userId) => {
   return result;
 };
 
-const createCycle = async () => {};
+const createCycle = async (userId, started_at) => {
+  const [result] = await db.execute(
+    `INSERT INTO cycles (user_id, started_at) VALUES(?, ?)`,
+    [userId, started_at],
+  );
+  return result;
+};
 
 module.exports = {
   getCyclesByUserId,
@@ -89,4 +95,5 @@ module.exports = {
   getCycleByIdAndUserId,
   editCycle,
   deleteCycle,
+  createCycle,
 };

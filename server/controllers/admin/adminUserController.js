@@ -38,6 +38,7 @@ const createUser = async (req, res) => {
     }
 
     const result = await userQueries.createUser(userData);
+    await userQueries.createUserCycleSettings(result.insertId);
 
     res.status(201).json({ message: "User created" });
   } catch (err) {
@@ -120,6 +121,23 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
+const getUserByLogin = async (req, res) => {
+  try {
+    const { login } = req.params;
+
+    const user = await userQueries.getUserByLogin(login);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Server error");
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -145,5 +163,6 @@ module.exports = {
   deleteUser,
   getUserById,
   getUserByEmail,
+  getUserByLogin,
   getUsers,
 };

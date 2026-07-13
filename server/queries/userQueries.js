@@ -72,11 +72,21 @@ const editUser = async (userId, data) => {
   return result;
 };
 
+const createUserCycleSettings = async (userId) => {
+  const [result] = await db.execute(
+    `
+    INSERT INTO user_cycle_settings (user_id) VALUES (?)`,
+    [userId],
+  );
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   getUserByEmail,
+  getUserByLogin,
   deleteUser,
   editUser,
+  createUserCycleSettings,
 };

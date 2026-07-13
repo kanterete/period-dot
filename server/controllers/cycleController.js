@@ -1,5 +1,7 @@
 const cycleQueries = require("../queries/cycleQueries");
 
+// TODO: role crud for admin
+
 const getMyCycles = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -78,7 +80,7 @@ const deleteCycle = async (req, res) => {
     const userId = req.user.id;
     const { cycleId } = req.params;
 
-    const cycle = await cycleQueries.deleteCycle(cycleId, userId);
+    const cycle = await cycleQueries.getCycleByIdAndUserId(cycleId, userId);
 
     if (!cycle) {
       return res.status(404).send({
@@ -97,10 +99,25 @@ const deleteCycle = async (req, res) => {
   }
 };
 
+const createCycle = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const started_at_date = req.body.started_at_date;
+
+    const result = await cycleQueries.createCycle(userId, started_at_date);
+
+    res.status(201).send({ result, message: "Cycle created" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getMyCycles,
   getCurrentCycle,
   getCycleById,
   editCycle,
   deleteCycle,
+  createCycle,
 };

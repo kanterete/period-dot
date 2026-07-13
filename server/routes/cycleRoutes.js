@@ -10,6 +10,8 @@ router.get("/", cycleController.getMyCycles);
 router.get("/current", cycleController.getCurrentCycle);
 router.get("/:cycleId", cycleController.getCycleById);
 
+router.post("/", cycleController.createCycle);
+
 router.patch("/:cycleId", cycleController.editCycle);
 router.delete("/:cycleId", cycleController.deleteCycle);
 
