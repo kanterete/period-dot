@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "../type/types";
-import api from "../utils/axios";
+import api from "../utils/api";
 
 type loginData = {
   email: string;
@@ -20,7 +20,7 @@ interface ProviderProps {
   user: User | null;
   loading: boolean;
   login: (data: loginData) => Promise<void>;
-  register: (data: registerData) => Promise<void>;
+  registerAuth: (data: registerData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -29,7 +29,7 @@ const AuthContext = createContext<ProviderProps>({
   loading: true,
   login: async () => {},
   logout: async () => {},
-  register: async () => {},
+  registerAuth: async () => {},
   refreshUser: async () => {},
 });
 
@@ -41,6 +41,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (data: loginData) => {
     const res = await api.post("/auth/login", data);
+    console.log("LOGIN RESPONSE:", res.data);
     setUser(res.data.user);
     navigate("/");
   };
@@ -51,7 +52,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate("/login");
   };
 
-  const register = async (data: registerData) => {
+  const registerAuth = async (data: registerData) => {
     await api.post("/auth/register", data);
     navigate("/login");
   };
@@ -70,7 +71,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, register, refreshUser }}
+      value={{ user, loading, login, logout, registerAuth, refreshUser }}
     >
       {children}
     </AuthContext.Provider>
