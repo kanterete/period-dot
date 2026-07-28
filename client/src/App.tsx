@@ -5,14 +5,13 @@ import Register from "./pages/Register";
 
 function App() {
   return (
-    <div>
+    <main className="min-h-screen bg-app-bg px-4 py-6 sm:px-6 lg:px-8">
       <Navbar />
-      <div>MAIN APP</div>
       <Routes>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>
-    </div>
+    </main>
   );
 }
 

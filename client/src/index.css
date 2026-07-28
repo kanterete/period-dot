@@ -1,1 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 @import "tailwindcss";
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+
+  /* Main app colors */
+  --color-app-bg: #fff8f8;
+  --color-app-card: #ffffff;
+  --color-app-surface: #fff1f3;
+
+  /* Primary pink / raspberry */
+  --color-app-primary: #e94f78;
+  --color-app-primary-dark: #c93d66;
+  --color-app-primary-light: #f8a8bb;
+  --color-app-primary-soft: #fde4ea;
+
+  /* Secondary plum / sidebar */
+  --color-app-sidebar: #9f3f69;
+  --color-app-sidebar-dark: #843255;
+
+  /* Accent lavender */
+  --color-app-accent: #b99be8;
+  --color-app-accent-dark: #9b7bd6;
+  --color-app-accent-light: #eee4ff;
+
+  /* Soft neutral pinks */
+  --color-app-blush: #ffd9df;
+  --color-app-cream: #fff4f0;
+  --color-app-peach: #ffb7b7;
+
+  /* Text */
+  --color-app-text: #33272d;
+  --color-app-muted: #8c7b83;
+  --color-app-muted-light: #b9a9af;
+
+  /* Borders / lines */
+  --color-app-border: #f1d8df;
+  --color-app-border-soft: #f8e8ec;
+
+  /* States */
+  --color-app-error: #ef6f7b;
+  --color-app-error-soft: #ffe4e7;
+  --color-app-success: #7bc9a4;
+  --color-app-success-soft: #e2f7ed;
+  --color-app-warning: #f2a65a;
+  --color-app-warning-soft: #fff0dc;
+}
+
+html {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #fff8f8;
+  color: #33272d;
+}
