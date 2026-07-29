@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LockKeyhole, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import loginImage from "../assets/loginImage.png";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email"),
@@ -41,24 +42,26 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen bg-app-bg px-4 py-8">
+    <main className="min-h-screen bg-app-bg px-4 py-8 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl grid place-items-center">
-        <div className="grid w-full border border-app-border bg-app-card shadow-xl md:grid-cols-2">
-          <section className="min-h-140 bg-app-secondary">
-            <h1 className="text-4xl font-bold text-app-primary-dark p-10 md:flex md:flex-col md:justify-between">
-              Period.
-            </h1>
-            <img src="../images" alt="test img" />
+        <div className="grid w-full overflow-hidden bg-app-card rounded-xl shadow-xl md:grid-cols-2">
+          <section className="relative hidden min-h-140 overflow-hidden bg-app-primary-soft md:block ">
+            <img
+              src={loginImage}
+              alt="login image"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
           </section>
 
           <section className="flex items-center justify-center p-6 sm:p-10">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
+              className="w-full max-w-md flex flex-col gap-4"
             >
               <div>
                 <h1 className="font-semibold">Welcome back! 👋</h1>
-                <p>Login to your account</p>
+                <p className="text-sm text-app-muted">Login to your account</p>
               </div>
 
               <div className="flex items-center gap-3 rounded-xl border border-app-border bg-white px-4 py-3 focus: p-2">
