@@ -22,9 +22,6 @@ function App() {
           </ProtectedRoute>
         }
       >
-        {/* <h1 className="text-4xl font-bold text-app-primary-dark p-10 md:flex md:flex-col md:justify-between">
-          Period.
-        </h1> */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/cycles" element={<Cycles />} />
         <Route path="/profile" element={<Profile />} />

@@ -3,13 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Calendar,
-  ChevronLeft,
-  LockKeyhole,
-  Mail,
-  UserRound,
-} from "lucide-react";
+import { Calendar, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import registerImage from "../assets/registerImage.png";
 

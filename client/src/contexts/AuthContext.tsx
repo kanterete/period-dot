@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "../type/types";
 import api from "../utils/api";
@@ -41,7 +41,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (data: loginData) => {
     const res = await api.post("/auth/login", data);
-    console.log("LOGIN RESPONSE:", res.data);
     setUser(res.data.user);
     navigate("/");
   };
@@ -59,15 +58,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshUser = async () => {
     try {
-      const res = await api.get("/auth/me");
+      const res = await api.get("/users/me");
       setUser(res.data.user);
     } catch (err) {
       setUser(null);
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
 
   return (
     <AuthContext.Provider

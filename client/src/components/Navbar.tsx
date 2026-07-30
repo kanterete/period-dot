@@ -1,4 +1,4 @@
-import { CalendarDays, CircleUser, Home, RefreshCcw } from "lucide-react";
+import { CalendarDays, CircleUser, Droplet, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -17,7 +17,7 @@ const Navbar = () => {
             Calendar
           </Link>
           <Link to="/cycles" className="flex items-center gap-2">
-            <RefreshCcw className="w-4 h-4" />
+            <Droplet className="w-4 h-4" />
             Cycles
           </Link>
           <Link to="/profile" className="flex items-center gap-2">
